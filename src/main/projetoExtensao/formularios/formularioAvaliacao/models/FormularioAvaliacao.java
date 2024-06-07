@@ -5,6 +5,7 @@ import main.projetoExtensao.formularios.formularioSubmissao.enuns.EnumModalidade
 
 
 public class FormularioAvaliacao extends Formularios {
+    private String avaliando;
     private String nome_arquivo;
     private String avaliador;
     private String colegiado;
@@ -49,6 +50,11 @@ public class FormularioAvaliacao extends Formularios {
         extensao = new CheckBoxOpcao();
         parecer = new CheckBoxParecer();
         titulo = new CheckBoxOpcao();
+        avaliando = "Não está avaliando nenhum formulário";
+    }
+
+    public String getAvaliando() {
+        return avaliando;
     }
 
     public CheckBoxAtende[] getNatureza_academica() {
@@ -159,4 +165,7 @@ public class FormularioAvaliacao extends Formularios {
         this.nome_arquivo = nome_arquivo;
     }
 
+    public void setAvaliando(String avaliando) {
+        this.avaliando = avaliando;
+    }
 }

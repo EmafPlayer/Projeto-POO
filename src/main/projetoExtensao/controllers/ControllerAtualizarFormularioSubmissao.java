@@ -79,8 +79,8 @@ public class ControllerAtualizarFormularioSubmissao extends ControllerVerFormula
 
     public <T extends FormularioSubmissao> void escolherAlterar(T formulario){
         printDadosFormulario(formulario);
-        System.out.println("22 - Modificar o nome do arquivo");
-        System.out.println("0 - Voltar\n");
+        System.out.println("\n22 - Modificar o nome do arquivo");
+        System.out.println("\n0 - Voltar\n");
         System.out.println("Qual desses campos você deseja alterar (escolha pelo índice)? ");
         try{
             int opcao = scanner.nextInt();
@@ -846,7 +846,6 @@ public class ControllerAtualizarFormularioSubmissao extends ControllerVerFormula
     public <T extends FormularioSubmissao> void modificarReferencias(T formulario){
         boolean condicao = true;
         int opcao;
-        ControllerCriarFormularioSubmissao criar_formulario = new ControllerCriarFormularioSubmissao();
         ArrayList<String> referencias = formulario.getReferencias();
 
         while (condicao){
@@ -857,7 +856,7 @@ public class ControllerAtualizarFormularioSubmissao extends ControllerVerFormula
                 opcao = scanner.nextInt();
                 switch (opcao) {
                     case 1:
-                        criar_formulario.addReferencia(referencias);
+                        ControllerCriarFormularioSubmissao.addReferencia(referencias);
                         break;
 
                     case 2:
@@ -998,7 +997,6 @@ public class ControllerAtualizarFormularioSubmissao extends ControllerVerFormula
     public <T extends FormularioSubmissao> void modificarCronogramaExecucao(T formulario){
         boolean condicao = true;
         int opcao;
-        ControllerCriarFormularioSubmissao criar_formulario = new ControllerCriarFormularioSubmissao();
         ArrayList<CronogramaExecucao> cronogramas = formulario.getCronogramas_execucao();
 
         while (condicao){
@@ -1009,7 +1007,7 @@ public class ControllerAtualizarFormularioSubmissao extends ControllerVerFormula
                 opcao = scanner.nextInt();
                 switch (opcao) {
                     case 1:
-                        criar_formulario.addCronogramaExecucao(cronogramas);
+                        ControllerCriarFormularioSubmissao.addCronogramaExecucao(cronogramas);
                         break;
 
                     case 2:
@@ -1038,7 +1036,6 @@ public class ControllerAtualizarFormularioSubmissao extends ControllerVerFormula
     public <T extends FormularioSubmissao> void modificarEquipe(T formulario){
         boolean condicao = true;
         int opcao;
-        ControllerCriarFormularioSubmissao criar_formulario = new ControllerCriarFormularioSubmissao();
         ArrayList<Membro> equipe = formulario.getEquipe();
 
         while (condicao){
@@ -1049,7 +1046,7 @@ public class ControllerAtualizarFormularioSubmissao extends ControllerVerFormula
                 opcao = scanner.nextInt();
                 switch (opcao) {
                     case 1:
-                        criar_formulario.addMebros(equipe);
+                        ControllerCriarFormularioSubmissao.addMebros(equipe);
                         break;
 
                     case 2:

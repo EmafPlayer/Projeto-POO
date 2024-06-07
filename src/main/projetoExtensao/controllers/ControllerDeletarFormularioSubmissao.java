@@ -1,5 +1,6 @@
 package main.projetoExtensao.controllers;
 
+import main.projetoExtensao.formularios.formularioAvaliacao.models.FormularioAvaliacao;
 import main.projetoExtensao.formularios.formularioSubmissao.FormularioSubmissao;
 import main.projetoExtensao.formularios.formularioSubmissao.models.*;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 public class ControllerDeletarFormularioSubmissao extends ControllerVerFormularioSubmissao {
+    private ArrayList<FormularioAvaliacao> formularios_avaliacoes;
 
     public ControllerDeletarFormularioSubmissao(
             ArrayList<Curso> cursos,
@@ -16,9 +18,10 @@ public class ControllerDeletarFormularioSubmissao extends ControllerVerFormulari
             ArrayList<NucleoTematico> nucleos_tematicos,
             ArrayList<PrestacaoServico> prestacoes_servicos,
             ArrayList<Programa> programas,
-            ArrayList<Projeto> projetos){
-
+            ArrayList<Projeto> projetos,
+            ArrayList<FormularioAvaliacao> formularios_avaliacoes){
         super(cursos, empresas_juniors, eventos, ligas_cademicas, nucleos_tematicos, prestacoes_servicos, programas, projetos);
+        this.formularios_avaliacoes = formularios_avaliacoes;
     }
 
     public <T extends FormularioSubmissao> void printNomesFormularios(ArrayList<T> formularios){
@@ -45,8 +48,10 @@ public class ControllerDeletarFormularioSubmissao extends ControllerVerFormulari
                     scanner.nextLine();
 
                     if (indice >= 0 && indice < formularios.size()) {
+                        String nome_avaliador = formularios.get(indice).getAvaliador();
                         deletarFormulario(formularios, indice);
-                        System.out.println("Documento deletado com sucesso!\n\n");
+                        System.out.println("\nDocumento deletado com sucesso!");
+                        ControllerConexao.deleteAvaliador(formularios_avaliacoes, nome_avaliador);
                         condicao = false;
                     }
                     else
