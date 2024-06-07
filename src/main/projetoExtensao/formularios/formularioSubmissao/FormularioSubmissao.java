@@ -9,6 +9,7 @@ import main.projetoExtensao.formularios.formularioSubmissao.models.*;
 import java.util.ArrayList;
 
 public class FormularioSubmissao extends Formularios {
+    protected String avaliador;
     protected String nome_arquivo;
     protected EnumModalidade modalidade;
     protected EnumAreaExtensao area_extensao;
@@ -44,6 +45,11 @@ public class FormularioSubmissao extends Formularios {
         cronogramas_execucao = new ArrayList<>();
         equipe = new ArrayList<>();
         proposta_orcamentaria = new PropostaOrcamentaria();
+        avaliador = "Formulário ainda não avaliado";
+    }
+
+    public String getAvaliador() {
+        return avaliador;
     }
 
     public Coordenador getCoordenador() {
@@ -192,6 +198,10 @@ public class FormularioSubmissao extends Formularios {
 
     public void setColegiado_campus(String colegiado_campus) {
         this.colegiado_campus = colegiado_campus;
+    }
+
+    public void setAvaliador(String avaliador) {
+        this.avaliador = avaliador;
     }
 
 }

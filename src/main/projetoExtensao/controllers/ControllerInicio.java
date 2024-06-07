@@ -2,11 +2,13 @@ package main.projetoExtensao.controllers;
 
 import main.projetoExtensao.formularios.formularioAvaliacao.models.FormularioAvaliacao;
 import main.projetoExtensao.formularios.formularioSubmissao.FormularioSubmissao;
+import main.projetoExtensao.formularios.formularioSubmissao.enuns.EnumModalidade;
 import main.projetoExtensao.formularios.formularioSubmissao.models.*;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ControllerInicio {
@@ -35,13 +37,13 @@ public class ControllerInicio {
         scanner = new Scanner(System.in);
         formulario_submissao = new FormularioSubmissao();
         formulario_avaliacao = new FormularioAvaliacao();
-        criar_formulario = new ControllerCriarFormularioSubmissao();
         criar_formulario_avaliacao = new ControllerCriarFormularioAvaliacao();
     }
 
     public void iniciarMenu(){
+        criar_formulario = new ControllerCriarFormularioSubmissao(cursos, empresas_juniors, eventos, ligas_cademicas, nucleos_tematicos, prestacoes_servicos, programas, projetos);
         atualizar_formulario = new ControllerAtualizarFormularioSubmissao(cursos,empresas_juniors, eventos, ligas_cademicas, nucleos_tematicos, prestacoes_servicos, programas, projetos);
-        deletar_formulario = new ControllerDeletarFormularioSubmissao(cursos, empresas_juniors, eventos, ligas_cademicas, nucleos_tematicos, prestacoes_servicos, programas, projetos);
+        deletar_formulario = new ControllerDeletarFormularioSubmissao(cursos, empresas_juniors, eventos, ligas_cademicas, nucleos_tematicos, prestacoes_servicos, programas, projetos, formularios_avaliacoes);
         ver_formulario = new ControllerVerFormularioSubmissao(cursos, empresas_juniors, eventos, ligas_cademicas, nucleos_tematicos, prestacoes_servicos, programas, projetos);
         ver_formulario_avaliacao = new ControllerVerFormularioAvaliacao(formularios_avaliacoes);
         atualizar_formulario_avaliacao = new ControllerAtualizarFormularioAvaliacao(formularios_avaliacoes);
@@ -61,6 +63,7 @@ public class ControllerInicio {
                 input = scanner.nextInt();
                 scanner.nextLine();
                 switch (input) {
+
                     case 1:
                         menuFormularioSubimissao();
                         break;
@@ -107,8 +110,7 @@ public class ControllerInicio {
                 switch (input) {
                     case 1:
                         System.out.println("Você escolheu criar um Formulário de Subimissão...\n");
-                        formulario_submissao = criar_formulario.iniciarFormulario();
-                        addArquivo(formulario_submissao);
+                        criar_formulario.iniciarFormulario();
                         System.out.println("\nDocumento criado com sucesso!\n\n");
                         break;
 
@@ -145,7 +147,6 @@ public class ControllerInicio {
     public void menuFormularioAvaliacao(){
         int input;
         boolean condicao = true;
-        FormularioSubmissao formulario_submissao;
 
         while(condicao) {
             System.out.println("\n========================================");
@@ -165,10 +166,7 @@ public class ControllerInicio {
                     case 1:
                         if(!ver_formulario.formularioIsEmpty()) {
                             System.out.println("Você escolheu criar um formulário...\n");
-                            formulario_submissao = selecionarAvaliacao();
-                            formulario_avaliacao = criar_formulario_avaliacao.criarFormulario(formulario_submissao);
-                            formularios_avaliacoes.add(formulario_avaliacao);
-                            System.out.println("Documento criado com sucesso!\n\n");
+                            selecionarAvaliacao();
                         } else
                             System.out.println("Nenhum Formulário de Submissão foi criado. É preciso criar um Formulário de Submissão para poder Ver, Deletar ou Atualizar.\n");
                         break;
@@ -185,7 +183,11 @@ public class ControllerInicio {
 
                     case 4:
                         System.out.println("Você escolheu deletar um formulário...\n");
-                        deletar_formulario_avaliacao.exibirFormularios();
+                        String nome_arquivo_avaliado = deletar_formulario_avaliacao.exibirFormularios();
+                        if(!Objects.equals(nome_arquivo_avaliado, "")) {
+                            ControllerConexao.removerAvaliacao(cursos, empresas_juniors, eventos, ligas_cademicas, nucleos_tematicos, prestacoes_servicos, programas, projetos, nome_arquivo_avaliado);
+                            System.out.println("\nDocumento deletado com sucesso!");
+                        }
                         break;
 
                     case 0:
@@ -203,38 +205,10 @@ public class ControllerInicio {
         }
     }
 
-    public void addArquivo(FormularioSubmissao formulario_submissao){
+    public void selecionarAvaliacao() {
 
-        if(formulario_submissao instanceof Programa)
-            criar_formulario.addFormulario(programas, (Programa) formulario_submissao);
-
-        else if(formulario_submissao instanceof Projeto)
-            criar_formulario.addFormulario(projetos, (Projeto) formulario_submissao);
-
-        else if(formulario_submissao instanceof NucleoTematico)
-            criar_formulario.addFormulario(nucleos_tematicos, (NucleoTematico) formulario_submissao);
-
-        else if(formulario_submissao instanceof Evento)
-            criar_formulario.addFormulario(eventos, (Evento) formulario_submissao);
-
-        else if(formulario_submissao instanceof EmpresaJunior)
-            criar_formulario.addFormulario(empresas_juniors, (EmpresaJunior) formulario_submissao);
-
-        else if(formulario_submissao instanceof LigaAcademica)
-            criar_formulario.addFormulario(ligas_cademicas, (LigaAcademica) formulario_submissao);
-
-        else if(formulario_submissao instanceof PrestacaoServico)
-            criar_formulario.addFormulario(prestacoes_servicos, (PrestacaoServico) formulario_submissao);
-
-        else if(formulario_submissao instanceof Curso)
-            criar_formulario.addFormulario(cursos, (Curso) formulario_submissao);
-    }
-
-    public FormularioSubmissao selecionarAvaliacao() {
-
-        int opcao = 0;
+        int opcao;
         boolean condicao = true;
-        FormularioSubmissao form = new FormularioSubmissao();
 
         while (condicao) {
             System.out.println("\nPara ser possível preencher um Formulario de Avaliação é preciso escolher um Formulário de Submissão.\nEntão vamos lá...");
@@ -253,43 +227,53 @@ public class ControllerInicio {
                         break;
 
                     case 1:
-                        return escolherFormulario(programas);
+                        escolherFormulario(programas);
+                        break;
 
                     case 2:
-                        return escolherFormulario(projetos);
+                        escolherFormulario(projetos);
+                        break;
 
                     case 3:
-                        return escolherFormulario(nucleos_tematicos);
+                        escolherFormulario(nucleos_tematicos);
+                    break;
 
                     case 4:
-                        return escolherFormulario(eventos);
+                        escolherFormulario(eventos);
+                    break;
 
                     case 5:
-                        return escolherFormulario(empresas_juniors);
+                        escolherFormulario(empresas_juniors);
+                    break;
 
                     case 6:
-                        return escolherFormulario(ligas_cademicas);
+                        escolherFormulario(ligas_cademicas);
+                    break;
 
                     case 7:
-                        return escolherFormulario(prestacoes_servicos);
+                        escolherFormulario(prestacoes_servicos);
+                    break;
 
                     case 8:
-                        return escolherFormulario(cursos);
+                        escolherFormulario(cursos);
+                    break;
 
                     default:
                         System.out.println("Esses campos são obrigatórios! Marque um desses que estão disponíveis.");
                         break;
+                }
+                if (opcao >= 1 && opcao <= 8) {
+                    formularios_avaliacoes.add(formulario_avaliacao);
+                    System.out.println("Documento criado com sucesso!\n\n");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Esses campos são obrigatórios! Marque um desses que estão disponíveis.");
                 scanner.nextLine();
             }
         }
-        return form;
     }
 
-    public <T extends FormularioSubmissao> FormularioSubmissao escolherFormulario(ArrayList<T> formularios){
-        FormularioSubmissao form = new FormularioSubmissao();
+    public <T extends FormularioSubmissao> void escolherFormulario(ArrayList<T> formularios){
         if(formularios.isEmpty())
             System.out.println("\n Não há formulários dessa modalidade\n");
         else {
@@ -300,45 +284,67 @@ public class ControllerInicio {
                 indice = 0;
                 System.out.println("------- Lista de Formulários -------");
                 for (T formulario : formularios) {
-                    System.out.println(indice + " - " + formulario.getNome_arquivo());
+                    System.out.println(indice + " - " + formulario.getNome_arquivo() +" (" + formulario.getAvaliador() + ")");
                     indice++;
                 }
                 System.out.print(indice + " - Voltar");
 
+                System.out.print("\nQual desses documentos você deseja avaliar (escolha pelo índice)? ");
 
-                while (indice < 0 || indice >= formularios.size()) {
+                try {
+                    opcao = scanner.nextInt();
+                    scanner.nextLine();
 
-                    System.out.print("\nQual desses documentos você deseja avaliar (escolha pelo índice)? ");
 
-                    try {
-                        opcao = scanner.nextInt();
-                        scanner.nextLine();
+                    if (opcao >= 0 && opcao < formularios.size()) {
 
-                        if (opcao >= 0 && opcao < formularios.size()) {
-                            return formularios.get(opcao);
-                        } else if (indice == opcao) {
-                            indice--;
+                        formulario_submissao = formularios.get(opcao);
+                        if (Objects.equals(formulario_submissao.getAvaliador(), "Formulário ainda não avaliado")) {
+                            String nome_arquivo = addNomeAvaliacao();
+                            formulario_avaliacao = criar_formulario_avaliacao.criarFormulario(formulario_submissao);
+                            formulario_avaliacao.setNome_arquivo(nome_arquivo);
+                            formulario_submissao.setAvaliador(formulario_avaliacao.getNome_arquivo());
                             condicao = false;
                         }
                         else
-                            System.out.println("Escolha um dos índices disponíveis.");
-
-                    } catch (InputMismatchException e) {
-                        System.out.println("Escolha pelo índice.");
-                        scanner.nextLine();
+                            System.out.println("\nNão é posível avaliar um formulário já avaliado.");
+                    } else if (indice == opcao) {
+                        condicao = false;
                     }
+                    else
+                        System.out.println("Escolha um dos índices disponíveis.");
 
+                } catch (InputMismatchException e) {
+                    System.out.println("Escolha pelo índice.");
+                    scanner.nextLine();
                 }
             }
         }
-        return form;
+    }
+
+    public String addNomeAvaliacao(){
+        try {
+            boolean condicao = true;
+            while(condicao) {
+                System.out.println("\nQual nome você deseja dar ao documento? ");
+                String nome_arquivo = scanner.nextLine();
+                if (!ControllerConexao.existeFormularioAvaliacao(formularios_avaliacoes, nome_arquivo))
+                    return nome_arquivo;
+                System.out.println("\nJá existe um formulário de submissão com esse nome.");
+            }
+        }catch (InputMismatchException e){
+            System.out.println("Erro ao inserir os dados");
+            scanner.nextLine();
+        }
+
+        return "";
     }
 
     public void serializacao()
             throws IOException, ClassNotFoundException {
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("programas.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/programas.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(programas);
             objectOutputStream.flush();
@@ -349,7 +355,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("cursos.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/cursos.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(cursos);
             objectOutputStream.flush();
@@ -360,7 +366,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("empresas.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/empresas.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(empresas_juniors);
             objectOutputStream.flush();
@@ -371,7 +377,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("eventos.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/eventos.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(eventos);
             objectOutputStream.flush();
@@ -382,7 +388,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("ligas.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/ligas.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(ligas_cademicas);
             objectOutputStream.flush();
@@ -393,7 +399,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("nucleos.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/nucleos.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(nucleos_tematicos);
             objectOutputStream.flush();
@@ -404,7 +410,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("prestacoes.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/prestacoes.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(prestacoes_servicos);
             objectOutputStream.flush();
@@ -415,7 +421,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("projetos.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/projetos.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(projetos);
             objectOutputStream.flush();
@@ -426,7 +432,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("avaliacao.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/serializados/avaliacao.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(formularios_avaliacoes);
             objectOutputStream.flush();
@@ -442,7 +448,7 @@ public class ControllerInicio {
             throws IOException, ClassNotFoundException {
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("programas.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/programas.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -458,7 +464,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("cursos.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/cursos.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -474,7 +480,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("empresas.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/empresas.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -490,7 +496,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("eventos.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/eventos.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -506,7 +512,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("ligas.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/ligas.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -522,7 +528,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("nucleos.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/nucleos.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -538,7 +544,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("prestacoes.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/prestacoes.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -554,7 +560,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("projetos.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/projetos.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -570,7 +576,7 @@ public class ControllerInicio {
         }
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("avaliacao.txt");
+            FileInputStream fileInputStream = new FileInputStream("src/main/serializados/avaliacao.txt");
 
             if (fileInputStream.available() > 0) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);

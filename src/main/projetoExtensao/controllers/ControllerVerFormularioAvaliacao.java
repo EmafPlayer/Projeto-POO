@@ -84,7 +84,7 @@ public class ControllerVerFormularioAvaliacao {
         EnumParecer parece;
 
 
-        System.out.println("\n\n\n---------------------------- " + formulario_avaliacao.getNome_arquivo() + " ----------------------------");
+        System.out.println("\n\n\n---------------------------- " + formulario_avaliacao.getNome_arquivo() + " (" + formulario_avaliacao.getAvaliando() + ") ----------------------------");
 
         System.out.println("\nAVALIADOR(A):\n" + formulario_avaliacao.getAvaliador());
 

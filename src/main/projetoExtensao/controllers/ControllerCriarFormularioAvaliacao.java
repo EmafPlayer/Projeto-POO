@@ -21,7 +21,6 @@ public class ControllerCriarFormularioAvaliacao {
     }
 
     public FormularioAvaliacao criarFormulario(FormularioSubmissao formulario_subimissao){
-        String nome_arquivo;
         IdentificacaoProposta proposta = formulario_avaliacao.getProposta();
         CheckBoxOpcao titulo = formulario_avaliacao.getTitulo();
         CheckBoxAtende[] natureza_academica = formulario_avaliacao.getNatureza_academica();
@@ -43,13 +42,10 @@ public class ControllerCriarFormularioAvaliacao {
         proposta.setCoordenador(coordenador.getNome());
         proposta.setColegiado_setor(formulario_subimissao.getColegiado_campus());
         proposta.setTitulo_proposta(formulario_subimissao.getTitulo_proposta());
+        formulario_avaliacao.setAvaliando(formulario_subimissao.getNome_arquivo());
 
 
         try {
-            System.out.println("\nQual nome você deseja dar ao documento? ");
-            nome_arquivo = scanner.nextLine();
-            formulario_avaliacao.setNome_arquivo(nome_arquivo);
-
             System.out.println("\nAVALIADOR(A):");
             String texto = scanner.nextLine();
             formulario_avaliacao.setAvaliador(texto);

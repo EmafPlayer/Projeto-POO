@@ -177,12 +177,12 @@ public class ControllerVerFormularioSubmissao {
         PropostaOrcamentaria proposta_orcamentaria = formulario.getProposta_orcamentaria();
         int count = 1;
 
-        System.out.println("\n\n\n---------------------------- " + formulario.getNome_arquivo() + " ----------------------------");
-        System.out.println("\n 1 - Modalidade da Proposta de Extensão: " + modalidade.getTexto());
-        System.out.println("\n 2 - Área de Extensão Vinculada: " + area_extensao.getTexto());
-        System.out.println("\n 3 - Linha de Extensão: " + lInha_extensao.getTexto());
-        System.out.println("\n 4 - Título da Ação Proposta: " + formulario.getTitulo_proposta());
-        System.out.println("\n 5 - Coordenador(a):");
+        System.out.println("\n\n\n---------------------------- " + formulario.getNome_arquivo() + " (" + formulario.getAvaliador() + ") ----------------------------");
+        System.out.println("\n1 - Modalidade da Proposta de Extensão: " + modalidade.getTexto());
+        System.out.println("\n2 - Área de Extensão Vinculada: " + area_extensao.getTexto());
+        System.out.println("\n3 - Linha de Extensão: " + lInha_extensao.getTexto());
+        System.out.println("\n4 - Título da Ação Proposta: " + formulario.getTitulo_proposta());
+        System.out.println("\n5 - Coordenador(a):");
         System.out.println("Nome completo: " + coordenador.getNome());
         System.out.println("CPF: " + coordenador.getCpf());
         System.out.println("Email: " + coordenador.getEmail());
@@ -258,7 +258,7 @@ public class ControllerVerFormularioSubmissao {
         int count = 1;
         DecimalFormat decimal = new DecimalFormat("0.00");
 
-        System.out.println("\n-------------- " + formulario.getNome_arquivo() + " --------------");
+        System.out.println("\n-------------- " + formulario.getNome_arquivo() + " (" + formulario.getAvaliador() + ") --------------");
         System.out.println("\n1 - Modalidade da Proposta de Extensão -> " + modalidade.getTexto());
         System.out.println("\n2 - *Eventos -> " + evento.getTexto());
         System.out.println("\n3 - Área de Extensão Vinculada -> " + area_extensao.getTexto());
@@ -341,7 +341,7 @@ public class ControllerVerFormularioSubmissao {
         int count = 1;
         DecimalFormat decimal = new DecimalFormat("0.00");
 
-        System.out.println("\n-------------- " + formulario.getNome_arquivo() + " --------------");
+        System.out.println("\n-------------- " + formulario.getNome_arquivo() + " (" + formulario.getAvaliador() + ") --------------");
         System.out.println("\n1 - Modalidade da Proposta de Extensão -> " + modalidade.getTexto());
         System.out.println("\n2 - *Cursos -> " + curso.getTexto());
         System.out.println("\n3 - Área de Extensão Vinculada -> " + area_extensao.getTexto());

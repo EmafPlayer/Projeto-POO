@@ -17,10 +17,12 @@ public class ControllerDeletarFormularioAvaliacao {
         scanner = new Scanner(System.in);
     }
 
-    public void exibirFormularios(){
+    public String exibirFormularios(){
+        String nome_arquivo_avaliado = "";
         if(formularios.isEmpty())
             System.out.println("Nenhum Formulário de Avaliação foi criado. É preciso criar um Formulário de Avaliação para poder Ver, Deletar ou Atualizar.\n");
         else {
+
             int opcao, indice;
             boolean condicao = true;
 
@@ -28,18 +30,19 @@ public class ControllerDeletarFormularioAvaliacao {
                 indice = 0;
                 System.out.println("\n------- Lista de Formulários -------");
                 for (FormularioAvaliacao formulario : formularios) {
-                    System.out.println(indice + " - " + formulario.getNome_arquivo());
+                    System.out.println(indice + " - " + formulario.getNome_arquivo() + " (" + formulario.getAvaliando() + ")");
                     indice++;
                 }
                 System.out.println(indice + " - Voltar");
 
                 System.out.print("\nQual desses documentos você deseja deletar (escolha pelo índice)? ");
 
-                try{
+                try {
                     opcao = scanner.nextInt();
                     scanner.nextLine();
 
                     if (opcao >= 0 && opcao < formularios.size()) {
+                        nome_arquivo_avaliado = formularios.get(opcao).getAvaliando();
                         deletarFormulario(formularios, opcao);
                         System.out.println("\nDocumento deletado com sucesso!");
                     } else if (opcao == indice)
@@ -47,12 +50,13 @@ public class ControllerDeletarFormularioAvaliacao {
                     else
                         System.out.println("Escolha um dos índices disponíveis.");
 
-                } catch (InputMismatchException e){
+                } catch (InputMismatchException e) {
                     System.out.println("Escolha pelo índice.");
                     scanner.nextLine();
                 }
             }
         }
+        return nome_arquivo_avaliado;
     }
 
     public void deletarFormulario(ArrayList<FormularioAvaliacao> formularios, int indice){
